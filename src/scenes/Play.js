@@ -16,7 +16,8 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.background.tilePositionX += 10;
+        this.background.tilePositionX += 600 / game.loop.actualFps;
+        //console.log(game.loop.actualFps);
     }
   
   }
