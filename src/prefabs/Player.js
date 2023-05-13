@@ -13,6 +13,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.laneY = [365, 415, 470, 520, 570, 630];
         //this.laneY = [375, 415, 470, 520, 570, 630];
         this.setOrigin(0,1);
+        this.anims.play('player_idle');
         
     }
 

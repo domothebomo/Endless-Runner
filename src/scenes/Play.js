@@ -7,27 +7,34 @@ class Play extends Phaser.Scene {
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
         this.load.image('player', './assets/cyclist3.png');
+
+        this.load.spritesheet('player_idle', './assets/cyclist_idle.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
     }
   
     create() {
-        //console.log('bruh');
-        //this.scene.start('playScene');
-        //this.text = this.add.text(game.config.width / 2, game.config.height / 2, 'PLAY', {});
+        
+        // BACKGROUND SPRITES
         this.background = this.add.tileSprite(0, 0, 960, 640, 'skyline').setOrigin(0,0);
         this.highway = this.add.tileSprite(0, 0, 960, 640, 'highway').setOrigin(0,0);
 
-        //this.text = this.add.text(game.config.width / 2, game.config.height / 2, 'PLAY', {});
+        // ANIMATIONS
+        this.anims.create({
+            key: 'player_idle',
+            frames: this.anims.generateFrameNumbers('player_idle', {start: 0, end: 1, first: 0}),
+            frameRate: 10,
+            repeat: -1
+        });
 
-        //this.player = this.add.sprite(50, 340, 'player');
+        // PLAYER
         this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
     }
 
     update() {
-        //this.highway.tilePositionX += 600 / game.loop.actualFps;
-        //this.background.tilePositionX += 240 / game.loop.actualFps;
+        // UPDATE BACKGROUND
         this.highway.tilePositionX += 10;
         this.background.tilePositionX += 1;
-        //console.log(game.loop.actualFps);
+
+        // UPDATE PLAYER
         this.player.update();
     }
   
