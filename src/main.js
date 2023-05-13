@@ -6,6 +6,9 @@ let config = {
         target: 60,
         forceSetTimeOut: true
     },
+    physics: {
+        default: 'arcade'
+    },
     scene: [ Title, Play ]
 }
 

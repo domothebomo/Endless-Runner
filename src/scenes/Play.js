@@ -18,7 +18,8 @@ class Play extends Phaser.Scene {
 
         //this.text = this.add.text(game.config.width / 2, game.config.height / 2, 'PLAY', {});
 
-        this.player = this.add.sprite(50, 340, 'player');
+        //this.player = this.add.sprite(50, 340, 'player');
+        this.player = new Player(this, 50, 340, 'player');
     }
 
     update() {
@@ -27,6 +28,7 @@ class Play extends Phaser.Scene {
         this.highway.tilePositionX += 10;
         this.background.tilePositionX += 1;
         console.log(game.loop.actualFps);
+        this.player.update();
     }
   
   }
