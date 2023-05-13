@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
-        this.load.image('player', './assets/cyclist2.png');
+        this.load.image('player', './assets/cyclist3.png');
     }
   
     create() {
@@ -19,7 +19,7 @@ class Play extends Phaser.Scene {
         //this.text = this.add.text(game.config.width / 2, game.config.height / 2, 'PLAY', {});
 
         //this.player = this.add.sprite(50, 340, 'player');
-        this.player = new Player(this, 50, 340, 'player');
+        this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
     }
 
     update() {
@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
         //this.background.tilePositionX += 240 / game.loop.actualFps;
         this.highway.tilePositionX += 10;
         this.background.tilePositionX += 1;
-        console.log(game.loop.actualFps);
+        //console.log(game.loop.actualFps);
         this.player.update();
     }
   
