@@ -37,19 +37,66 @@ class Play extends Phaser.Scene {
 
         //this.enemy = this.physics.add.sprite(960, 470, 'enemy_idle', 0).setOrigin(0,1);
         //this.enemy.anims.play('enemy_idle');
-        this.enemy = new Enemy(this, game.config.startSpeed).setOrigin(0,1);
+        this.enemies = [];
+        //this.enemyCount = 1;
+        //for (let i = 0; i < 3; i++) {
+        this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
+        this.enemyCount = 1;
+        //}
+        //this.enemy = new Enemy(this, game.config.startSpeed).setOrigin(0,1);
+
+        //this.timeCount
+        this.level = 0;
+        this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer, callbackScope: this, repeat: -1});
+        //this.level = 0;
+        //this.timer.addEvent()
+
+        this.timeDisplay = this.add.text(50, 50, '0', {});
     }
 
     update() {
+        //console.log(game.getTime());
+        //console.log(this.level);
+        //console.log(this.timer.elapsed + 5000 * this.level);
         // UPDATE BACKGROUND
-        this.highway.tilePositionX += 10;
-        this.background.tilePositionX += 1;
+        //this.highway.tilePositionX += 10;
+        //this.background.tilePositionX += 1;
 
-        // UPDATE PLAYER
-        this.player.update();
+        if (!this.player.crashed) {
 
-        //this.enemy.setVelocity(-300, 0);
-        this.enemy.update();
+            this.timeDisplay.text = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
+
+            // UPDATE BACKGROUND
+            this.highway.tilePositionX += 10;
+            this.background.tilePositionX += 1;
+
+            // UPDATE PLAYER
+            this.player.update();
+
+            // UPDATE ENEMIES
+            //this.enemy.update();
+
+            // UPDATE ENEMIES
+            for (let i = 0; i < 1; i++) {
+                this.enemies[i].update();
+
+                // CHECK COLLISIONS
+                this.physics.world.overlap(this.player, this.enemies[i], this.crash, null, this);
+            }
+        }
+    }
+
+    newTimer() {
+        //console.log('yo');
+        this.level += 1;
+        //console.log(this.level);
+        //this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer});
+    }
+
+    crash() {
+        this.player.crashed = true;
+        this.player.setVelocityY(0);
+        console.log('bruh');
     }
   
   }
