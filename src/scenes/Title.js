@@ -17,6 +17,7 @@ class Title extends Phaser.Scene {
     });
     this.playButton.on('pointerdown', () => {
       game.config.startSpeed = 1;
+      game.config.increment = 0.1;
       this.scene.start('playScene');
     });
 

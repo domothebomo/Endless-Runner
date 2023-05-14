@@ -40,8 +40,10 @@ class Play extends Phaser.Scene {
         this.enemies = [];
         //this.enemyCount = 1;
         //for (let i = 0; i < 3; i++) {
-        this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
+        //this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
         this.enemyCount = 1;
+        this.enemySpeedMod = game.config.startSpeed;
+        this.enemies.push(new Enemy(this).setOrigin(0,1));
         //}
         //this.enemy = new Enemy(this, game.config.startSpeed).setOrigin(0,1);
 
@@ -55,19 +57,13 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        //console.log(game.getTime());
-        //console.log(this.level);
-        //console.log(this.timer.elapsed + 5000 * this.level);
-        // UPDATE BACKGROUND
-        //this.highway.tilePositionX += 10;
-        //this.background.tilePositionX += 1;
 
         if (!this.player.crashed) {
 
             this.timeDisplay.text = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
 
             // UPDATE BACKGROUND
-            this.highway.tilePositionX += 10;
+            this.highway.tilePositionX += 6 * this.enemySpeedMod;
             this.background.tilePositionX += 1;
 
             // UPDATE PLAYER
@@ -77,11 +73,13 @@ class Play extends Phaser.Scene {
             //this.enemy.update();
 
             // UPDATE ENEMIES
-            for (let i = 0; i < 1; i++) {
+            for (let i = 0; i < this.enemyCount; i++) {
                 this.enemies[i].update();
 
                 // CHECK COLLISIONS
-                this.physics.world.overlap(this.player, this.enemies[i], this.crash, null, this);
+                if (this.player.lane == this.enemies[i].lane) {
+                    this.physics.world.overlap(this.player, this.enemies[i], this.crash, null, this);
+                }
             }
         }
     }
@@ -89,6 +87,11 @@ class Play extends Phaser.Scene {
     newTimer() {
         //console.log('yo');
         this.level += 1;
+        this.enemySpeedMod += game.config.increment;
+        if (this.enemyCount < 3) {
+            this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
+            this.enemyCount += 1;
+        }
         //console.log(this.level);
         //this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer});
     }
