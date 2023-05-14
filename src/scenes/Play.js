@@ -4,6 +4,8 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
+        this.load.audio('music', './assets/sunset-rider.mp3');
+
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
         this.load.image('player', './assets/cyclist3.png');
@@ -19,18 +21,29 @@ class Play extends Phaser.Scene {
         this.highway = this.add.tileSprite(0, 0, 960, 640, 'highway').setOrigin(0,0);
 
         // ANIMATIONS
-        this.anims.create({
-            key: 'player_idle',
-            frames: this.anims.generateFrameNumbers('player_idle', {start: 0, end: 1, first: 0}),
-            frameRate: 10,
-            repeat: -1
+        if (!this.anims.exists('player_idle')) {
+            this.anims.create({
+                key: 'player_idle',
+                frames: this.anims.generateFrameNumbers('player_idle', {start: 0, end: 1, first: 0}),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
+
+        if (!this.anims.exists('enemy_idle')) {
+            this.anims.create({
+                key: 'enemy_idle',
+                frames: this.anims.generateFrameNumbers('enemy_idle', {start: 0, end: 1, first: 0}),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
+
+        this.music = this.sound.add("music", {
+            volume: 0.1,
+            loop: true
         });
-        this.anims.create({
-            key: 'enemy_idle',
-            frames: this.anims.generateFrameNumbers('enemy_idle', {start: 0, end: 1, first: 0}),
-            frameRate: 10,
-            repeat: -1
-        });
+        this.music.play();
 
         // PLAYER
         this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
@@ -64,7 +77,7 @@ class Play extends Phaser.Scene {
 
             // UPDATE BACKGROUND
             this.highway.tilePositionX += 6 * this.enemySpeedMod;
-            this.background.tilePositionX += 1;
+            this.background.tilePositionX += 1 * this.enemySpeedMod;
 
             // UPDATE PLAYER
             this.player.update();
@@ -97,9 +110,22 @@ class Play extends Phaser.Scene {
     }
 
     crash() {
+        this.music.stop();
         this.player.crashed = true;
         this.player.setVelocityY(0);
-        console.log('bruh');
+        //console.log('bruh');
+
+        // RESTART BUTTON
+        this.restartButton = this.add.sprite(game.config.width / 2, game.config.height / 2, 'button');
+        this.restartButtonText = this.add.text(this.restartButton.x, this.restartButton.y, 'RESTART', {color: '#000000'}).setOrigin(0.5, 0.5);
+        this.restartButton.setInteractive({
+        useHandCursor: true
+        });
+        this.restartButton.on('pointerdown', () => {
+        this.scene.restart();
+        });
+
+
     }
   
   }
