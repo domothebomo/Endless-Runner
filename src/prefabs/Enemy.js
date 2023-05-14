@@ -4,15 +4,43 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         let randomLane = Phaser.Math.Between(0, 5);
         super(scene, 960, lanes[randomLane], 'enemy_idle');
 
+        // PARAMETERS
         this.currentScene = scene;
+        this.modifier = modifier;
+
+        // ADD ENEMY TO SCENE
         this.currentScene.add.existing(this);
         this.currentScene.physics.add.existing(this);
+
+        // ATTRIBUTES
         this.moveSpeed = 300;
         this.lane = randomLane;
         this.laneY = lanes;
+
+        // CONFIG
         this.anims.play('enemy_idle');
         this.setVelocity(-this.moveSpeed * modifier, 0);
         
+    }
+
+    update() {
+        // RESET ON REACHING END OF SCREEN
+        if (this.x < 0 - this.width) {
+            this.reset(0.1);
+        }
+    }
+
+    reset(mod) {
+        this.lane = Phaser.Math.Between(0, 5);
+        this.y = this.laneY[this.lane];
+        this.x = 960;
+        if (this.modifier >= 5.0) {
+            this.modifier = 5.0;
+        } else {
+            this.modifier += mod;
+        }
+        console.log(this.modifier);
+        this.setVelocity(-this.moveSpeed * this.modifier, 0);
     }
 
 }
