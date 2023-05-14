@@ -6,14 +6,20 @@ class Play extends Phaser.Scene {
     preload() {
         this.load.audio('music', './assets/sunset-rider.mp3');
         this.load.audio('explosion', './assets/explosion.wav');
+        this.load.audio('pickup', './assets/pickupclub.wav')
+        this.load.audio('swing', './assets/swing.wav');
 
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
         this.load.image('player', './assets/cyclist3.png');
+        this.load.image('golfbag', './assets/golfbag.png');
 
         this.load.spritesheet('player_idle', './assets/cyclist_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
         this.load.spritesheet('player_crash', './assets/cyclist_crash.png', {frameWidth: 80, frameHeight: 64, startFrame: 0, endFrame: 7});
+        this.load.spritesheet('player_idleclub', './assets/cyclist_idleclub.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+
         this.load.spritesheet('enemy_idle', './assets/grunt_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('enemy_slice', './assets/grunt_slice.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
     }
   
     create() {
@@ -39,6 +45,14 @@ class Play extends Phaser.Scene {
                 repeat: 0
             });
         }
+        if (!this.anims.exists('player_idleclub')) {
+            this.anims.create({
+                key: 'player_idleclub',
+                frames: this.anims.generateFrameNumbers('player_idleclub', {start: 0, end: 1, first: 0}),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
 
         if (!this.anims.exists('enemy_idle')) {
             this.anims.create({
@@ -48,9 +62,25 @@ class Play extends Phaser.Scene {
                 repeat: -1
             });
         }
+        if (!this.anims.exists('enemy_slice')) {
+            this.anims.create({
+                key: 'enemy_slice',
+                frames: this.anims.generateFrameNumbers('enemy_slice', {start: 0, end: 2, first: 0}),
+                frameRate: 10,
+                repeat: 0
+            });
+        }
         
 
         this.explosion = this.sound.add("explosion", {
+            volume: 0.5
+        });
+
+        this.pickup = this.sound.add("pickup", {
+            volume: 0.5
+        });
+
+        this.swing = this.sound.add("swing", {
             volume: 0.5
         })
 
@@ -61,7 +91,7 @@ class Play extends Phaser.Scene {
         this.music.play();
 
         // CONTROLS
-        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        //keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         // PLAYER
@@ -114,8 +144,17 @@ class Play extends Phaser.Scene {
             // UPDATE PLAYER
             this.player.update();
 
-            // UPDATE ENEMIES
-            //this.enemy.update();
+            // UPDATE GOLFBAG
+            if (this.golfBag) {
+                this.golfBag.update();
+                if (this.player.lane == this.golfBag.lane) {
+                    this.physics.world.overlap(this.player, this.golfBag, () => {
+                        this.golfBag.destroy();
+                        this.pickup.play();
+                        this.player.clubDurability = 3;
+                    }, null, this);
+                }
+            }
 
             // UPDATE ENEMIES
             for (let i = 0; i < this.enemyCount; i++) {
@@ -123,7 +162,7 @@ class Play extends Phaser.Scene {
 
                 // CHECK COLLISIONS
                 if (this.player.lane == this.enemies[i].lane) {
-                    this.physics.world.overlap(this.player, this.enemies[i], this.crash, null, this);
+                    this.physics.world.overlap(this.player, this.enemies[i], () => {this.crash(this.enemies[i])}, null, this);
                 }
             }
         }
@@ -132,6 +171,10 @@ class Play extends Phaser.Scene {
     newTimer() {
         //console.log('yo');
         this.level += 1;
+        if (this.level % 2 == 0) {
+            this.golfBag = new GolfBag(this).setOrigin(0,1);
+        }
+
         if (this.enemySpeedMod < 3) {
             this.enemySpeedMod += game.config.increment;
         }
@@ -143,13 +186,19 @@ class Play extends Phaser.Scene {
         //this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer});
     }
 
-    crash() {
+    crash(enemy) {
         this.music.stop();
+
+        enemy.anims.play('enemy_slice');
 
         this.player.crashed = true;
         this.player.setVelocityY(0);
         this.player.anims.play('player_crash');
         this.explosion.play();
+
+        if (this.golfBag) {
+            this.golfBag.setVelocity(0,0);
+        }
         //console.log('bruh');
 
         this.timer.destroy();

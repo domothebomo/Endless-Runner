@@ -3,22 +3,37 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, sprite);
 
         this.currentScene = scene;
+
         this.currentScene.add.existing(this);
         this.currentScene.physics.add.existing(this);
+
         this.cursors = this.currentScene.input.keyboard.createCursorKeys();
+        keySPACE = this.currentScene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
         this.moveSpeed = 400;
         this.lane = 2;
         //this.originalY = y;
         this.moving = false;
         this.crashed = false;
+        this.clubDurability = 0;
         this.laneY = [365, 415, 470, 520, 570, 630];
         //this.laneY = [375, 415, 470, 520, 570, 630];
-        this.setOrigin(0,1);
+
+        //this.setOrigin(0,1);
         this.anims.play('player_idle');
         
     }
 
     update() {
+
+        if (this.clubDurability > 0) {
+            this.anims.play('player_idleclub', true);
+            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.currentScene.swing.play();
+            }
+        } else {
+            this.anims.play('player_idle', true);
+        }
 
         if (!this.moving) {
             this.setVelocity(0, 0);
