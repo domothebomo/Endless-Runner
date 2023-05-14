@@ -18,6 +18,7 @@ class Title extends Phaser.Scene {
     this.playButton.on('pointerdown', () => {
       game.config.startSpeed = 1;
       game.config.increment = 0.1;
+      game.config.maxEnemies = 4;
       this.scene.start('playScene');
     });
 
@@ -28,8 +29,9 @@ class Title extends Phaser.Scene {
       useHandCursor: true
     });
     this.hardButton.on('pointerdown', () => {
-      game.config.startSpeed = 4;
+      game.config.startSpeed = 3;
       game.config.increment = 0.0;
+      game.config.maxEnemies = 6;
       this.scene.start('playScene');
     });
 
@@ -42,6 +44,8 @@ class Title extends Phaser.Scene {
     this.tutorialButton.on('pointerdown', () => {
 
     });
+
+    this.creditsText = this.add.text(game.config.width / 2, game.config.height / 2 + 116, 'created by Dominic Fanaris\nMusic: Sunset Rider - FASSounds', {}).setOrigin(0.5,0.5);
 
   }
 
