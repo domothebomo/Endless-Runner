@@ -33,28 +33,14 @@ class Title extends Phaser.Scene {
       this.scene.start('playScene');
     });
 
-    // PLAY BUTTON
-    this.playButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button').setScale(2.1, 1);
-    this.playButtonText = this.add.text(this.playButton.x, this.playButton.y, 'PLAY', {color: '#000000'}).setOrigin(0.5, 0.5);
-    this.playButton.setInteractive({
+    // TUTORIAL BUTTON
+    this.tutorialButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button').setScale(2.1, 1);
+    this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'HOW TO PLAY', {color: '#000000'}).setOrigin(0.5, 0.5);
+    this.tutorialButton.setInteractive({
       useHandCursor: true
     });
-    this.playButton.on('pointerdown', () => {
-      game.config.startSpeed = 1;
-      game.config.increment = 0.1;
-      this.scene.start('playScene');
-    });
+    this.tutorialButton.on('pointerdown', () => {
 
-    // PLAY BUTTON
-    this.playButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 116, 'button').setScale(2.1, 1);
-    this.playButtonText = this.add.text(this.playButton.x, this.playButton.y, 'PLAY', {color: '#000000'}).setOrigin(0.5, 0.5);
-    this.playButton.setInteractive({
-      useHandCursor: true
-    });
-    this.playButton.on('pointerdown', () => {
-      game.config.startSpeed = 1;
-      game.config.increment = 0.1;
-      this.scene.start('playScene');
     });
 
   }

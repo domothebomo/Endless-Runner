@@ -45,11 +45,14 @@ class Play extends Phaser.Scene {
         });
         this.music.play();
 
+        // CONTROLS
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
         // PLAYER
         this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
 
-        //this.enemy = this.physics.add.sprite(960, 470, 'enemy_idle', 0).setOrigin(0,1);
-        //this.enemy.anims.play('enemy_idle');
+        // ENEMIES
         this.enemies = [];
         //this.enemyCount = 1;
         //for (let i = 0; i < 3; i++) {
@@ -60,6 +63,7 @@ class Play extends Phaser.Scene {
         //}
         //this.enemy = new Enemy(this, game.config.startSpeed).setOrigin(0,1);
 
+        // TIMER
         //this.timeCount
         this.level = 0;
         this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer, callbackScope: this, repeat: -1});
@@ -114,7 +118,14 @@ class Play extends Phaser.Scene {
         this.player.crashed = true;
         this.player.setVelocityY(0);
         //console.log('bruh');
+        this.timer.destroy();
 
+        this.navButtons();
+
+
+    }
+
+    navButtons() {
         // RESTART BUTTON
         this.restartButton = this.add.sprite(game.config.width / 2, game.config.height / 2, 'button');
         this.restartButtonText = this.add.text(this.restartButton.x, this.restartButton.y, 'RESTART', {color: '#000000'}).setOrigin(0.5, 0.5);
@@ -125,7 +136,15 @@ class Play extends Phaser.Scene {
         this.scene.restart();
         });
 
-
+        // RESTART BUTTON
+        this.quitButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button');
+        this.quitButtonText = this.add.text(this.quitButton.x, this.quitButton.y, 'QUIT', {color: '#000000'}).setOrigin(0.5, 0.5);
+        this.quitButton.setInteractive({
+        useHandCursor: true
+        });
+        this.quitButton.on('pointerdown', () => {
+        this.scene.start('titleScene');
+        });
     }
   
   }
