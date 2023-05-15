@@ -13,7 +13,6 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.currentScene.physics.add.existing(this);
 
         // ATTRIBUTES
-        //this.moveSpeed = 300;
         this.moveSpeed = Phaser.Math.Between(400, 500);
         this.lane = randomLane;
         this.laneY = lanes;
@@ -40,13 +39,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.y = this.laneY[this.lane];
         this.x = 960;
         this.crashed = false;
-        //if (this.modifier >= 5.0) {
-        //    this.modifier = 5.0;
-        //} else {
-        //    this.modifier += mod;
-        //}
         this.modifier = this.currentScene.enemySpeedMod;
-        //console.log(this.modifier);
         this.setVelocity(-this.moveSpeed * this.modifier, 0);
     }
 

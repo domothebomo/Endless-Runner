@@ -12,15 +12,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.moveSpeed = 400;
         this.lane = 2;
-        //this.originalY = y;
         this.moving = false;
         this.crashed = false;
         this.clubDurability = 0;
         this.swinging = false;
         this.laneY = [365, 415, 470, 520, 570, 630];
-        //this.laneY = [375, 415, 470, 520, 570, 630];
-
-        //this.setOrigin(0,1);
         this.anims.play('player_idle');
         
     }
@@ -50,10 +46,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.swish.anims.play('swish');
 
                 this.anims.play('player_clubswing');
-                //this.on('animationcomplete',() => {
-                //    this.swinging=false;
-                //    this.swish.destroy();
-                //});
                 this.currentScene.time.delayedCall(400, () => {
                     this.swinging=false;
                     this.swish.destroy();
@@ -97,12 +89,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     hit(enemy) {
         if (!enemy.crashed) {
-            //this.on('animationcomplete',() => {
-            //    this.swinging=false;
-            //    this.swish.destroy();
-            //});
-            //this.swinging=false;
-            //this.swish.destroy();
             this.clubDurability -= 1;
             if (this.clubDurability > 0) {
                 this.currentScene.bonk.play();
@@ -111,6 +97,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             
             enemy.crashed = true;
+            enemy.setVelocity(-150, 0);
             enemy.anims.play('enemy_knockout');
             this.currentScene.time.delayedCall(3000, () => {
                 enemy.reset();

@@ -18,11 +18,14 @@ class Title extends Phaser.Scene {
     this.background = this.add.tileSprite(0, 0, 960, 640, 'skyline').setOrigin(0,0);
     this.highway = this.add.tileSprite(0, 0, 960, 640, 'highway').setOrigin(0,0);
 
+    // TITLE BORDER
     this.add.rectangle(game.config.width / 2, game.config.height / 2 - 102, 410, 90, 0xbbbbbb).setOrigin(0.5,0.5);
     this.add.rectangle(game.config.width / 2, game.config.height / 2 - 102, 400, 80, 0x2b2b2b).setOrigin(0.5,0.5);
 
+    // TITLE TEXT
     this.add.bitmapText(game.config.width / 2, game.config.height / 2 - 100, 'verminvibes', 'NIGHT RIDER').setOrigin(0.5,0.5);
 
+    // UI TEXT STYLE
     this.UIConfig = {
       color: '#000000',
       fontFamily: 'Verdana',
@@ -82,12 +85,9 @@ class Title extends Phaser.Scene {
 
     });
 
+    // CREDITS TEXT
     this.UIConfig.color = '#FFFFFF';
     this.creditsText = this.add.text(game.config.width / 2, game.config.height / 2 + 126, 'created by Dominic Fanaris\nMusic: Sunset Rider - FASSounds', this.UIConfig).setOrigin(0.5,0.5);
-
-  }
-
-  button() {
 
   }
 

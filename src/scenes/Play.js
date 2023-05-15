@@ -14,8 +14,6 @@ class Play extends Phaser.Scene {
         this.load.audio('break', './assets/audio/break.wav');
 
         // IMAGES
-        //this.load.image('highway', './assets/sprites/highway.png');
-        //this.load.image('skyline', './assets/sprites/skyline.png');
         this.load.image('player', './assets/sprites/cyclist2.png');
         this.load.image('golfbag', './assets/sprites/golfbag.png');
         this.load.image('contact', './assets/sprites/contact.png');
@@ -142,32 +140,22 @@ class Play extends Phaser.Scene {
         }
 
         // CONTROLS
-        //keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         // PLAYER
-        //this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
         this.player = new Player(this, 100, 470, 'player').setOrigin(0,1);
 
+        // GOLFBAG
         this.golfBag = null;
 
         // ENEMIES
         this.enemies = [];
-        //this.enemyCount = 1;
-        //for (let i = 0; i < 3; i++) {
-        //this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
         this.enemyCount = 0;
         this.enemySpeedMod = game.config.startSpeed;
-        //this.enemies.push(new Enemy(this).setOrigin(0,1));
-        //}
-        //this.enemy = new Enemy(this, game.config.startSpeed).setOrigin(0,1);
 
         // TIMER
-        //this.timeCount
         this.level = 0;
         this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer, callbackScope: this, repeat: -1});
-        //this.level = 0;
-        //this.timer.addEvent()
 
         // TIME DISPLAY BORDER
         this.add.rectangle(20, 20, game.config.width - 600, 30, 0xbbbbbb).setOrigin(0,0);
@@ -214,7 +202,6 @@ class Play extends Phaser.Scene {
             this.openDialogueBox();
             this.dialogueText = this.add.text(185, 85, '', this.UIConfig).setWordWrapWidth(491).setAlign('left');
             let dialogue = "Watch out, Rider! PearLab has sent their GRUNTS to prevent your escape. Use the UP and DOWN ARROW KEYS to SWITCH LANES and avoid their blades!";
-            //this.dialogueText.text = dialogue;
             this.rolloutDialogue(dialogue);
             this.time.delayedCall(10000, () => {
                 this.closeDialogueBox();
@@ -250,7 +237,6 @@ class Play extends Phaser.Scene {
             if (timeHours < 10) {
                 timeHours = '0'+timeHours;
             }
-            //this.timeDisplay.text = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
             this.timeDisplay.text = 'TIME: '+timeHours+':'+timeMinutes+':'+timeSeconds;
             if (timeElapsed > highestTime) {
                 highestTime = timeElapsed;
@@ -294,7 +280,6 @@ class Play extends Phaser.Scene {
     }
 
     newTimer() {
-        //console.log('yo');
         this.level += 1;
         // SPAWN GOLF CLUBS EVERY 15 SECONDS
         if (this.level % 3 == 0) {
@@ -303,9 +288,7 @@ class Play extends Phaser.Scene {
 
         if (tutorial && this.level == 3) {
             this.openDialogueBox();
-            //this.dialogueText = this.add.text(185, 85, '', this.UIConfig).setWordWrapWidth(491).setAlign('left');
             let dialogue = "Rider, PICK UP one of those GOLF CLUBS and use SPACE to SWING at any grunt directly in your way. They look FLIMSY though, might BREAK after a COUPLE GOOD HITS.";
-            //this.dialogueText.text = dialogue;
             this.rolloutDialogue(dialogue);
             this.time.delayedCall(10000, () => {
                 this.closeDialogueBox();
@@ -319,14 +302,16 @@ class Play extends Phaser.Scene {
             this.enemies.push(new Enemy(this, game.config.startSpeed).setOrigin(0,1));
             this.enemyCount += 1;
         }
-        //console.log(this.level);
-        //this.timer = this.time.addEvent({delay: 5000, callback: this.newTimer});
     }
 
     crash(enemy) {
         this.music.stop();
 
         enemy.anims.play('enemy_slice');
+        enemy.setVelocity(-150, 0);
+        enemy.on('animationcomplete', () => {
+            enemy.anims.play('enemy_idle');
+        });
 
         this.player.crashed = true;
         this.player.setVelocityY(0);
@@ -336,7 +321,6 @@ class Play extends Phaser.Scene {
         if (this.golfBag) {
             this.golfBag.setVelocity(0,0);
         }
-        //console.log('bruh');
 
         this.timer.destroy();
 
@@ -353,7 +337,6 @@ class Play extends Phaser.Scene {
         useHandCursor: true
         });
         this.restartButton.on('pointerdown', () => {
-            //this.music.stop();
             this.scene.restart();
         });
 
@@ -364,7 +347,6 @@ class Play extends Phaser.Scene {
         useHandCursor: true
         });
         this.quitButton.on('pointerdown', () => {
-            //this.music.stop();
             this.scene.start('titleScene');
         });
     }
@@ -416,8 +398,6 @@ class Play extends Phaser.Scene {
     }
 
     openDialogueBox() {
-        //this.dialogueBox = this.add.rectangle(175, 75, 512, 128, 0xbbbbbb).setOrigin(0,0);
-        //this.contactDisplay = this.add.image(20, 75, 'contact').setOrigin(0,0);
         this.tweens.add({
             targets: [this.contactDisplay, this.dialogueBox],
             duration: 400,
@@ -431,7 +411,6 @@ class Play extends Phaser.Scene {
         let lines = this.dialogueText.getWrappedText(dialogue);
         let text = lines.join('\n');
 
-        //let length = text.length;
         let letterCount = 0;
         this.time.addEvent({
             callback: () => {
