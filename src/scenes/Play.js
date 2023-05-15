@@ -407,6 +407,7 @@ class Play extends Phaser.Scene {
         });
     }
 
+    // Code for this function was partially adapted from https://blog.ourcade.co/posts/2020/phaser-3-typewriter-text-effect-bitmap/
     rolloutDialogue(dialogue) {
         let lines = this.dialogueText.getWrappedText(dialogue);
         let text = lines.join('\n');
