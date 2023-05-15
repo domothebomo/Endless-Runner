@@ -46,7 +46,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         //    this.modifier += mod;
         //}
         this.modifier = this.currentScene.enemySpeedMod;
-        console.log(this.modifier);
+        //console.log(this.modifier);
         this.setVelocity(-this.moveSpeed * this.modifier, 0);
     }
 

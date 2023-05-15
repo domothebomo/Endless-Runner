@@ -4,6 +4,8 @@ class Play extends Phaser.Scene {
     }
 
     preload() {
+
+        // AUDIO
         this.load.audio('music', './assets/sunset-rider.mp3');
         this.load.audio('explosion', './assets/explosion.wav');
         this.load.audio('pickup', './assets/pickupclub.wav')
@@ -11,20 +13,25 @@ class Play extends Phaser.Scene {
         this.load.audio('bonk', './assets/bonk.wav');
         this.load.audio('break', './assets/break.wav');
 
+        // IMAGES
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
         this.load.image('player', './assets/cyclist3.png');
         this.load.image('golfbag', './assets/golfbag.png');
 
-        this.load.spritesheet('player_idle', './assets/cyclist_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('player_crash', './assets/cyclist_crash.png', {frameWidth: 80, frameHeight: 64, startFrame: 0, endFrame: 7});
-        this.load.spritesheet('player_idleclub', './assets/cyclist_idleclub.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('player_clubswing', './assets/cyclist_clubswing.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 3});
+        //this.load.spritesheet('player_idle', './assets/cyclist_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+        //this.load.spritesheet('player_crash', './assets/cyclist_crash.png', {frameWidth: 80, frameHeight: 64, startFrame: 0, endFrame: 7});
+        //this.load.spritesheet('player_idleclub', './assets/cyclist_idleclub.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+        //this.load.spritesheet('player_clubswing', './assets/cyclist_clubswing.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 3});
 
-        this.load.spritesheet('enemy_idle', './assets/grunt_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        this.load.spritesheet('enemy_slice', './assets/grunt_slice.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
-        this.load.spritesheet('enemy_knockout', './assets/grunt_knockout.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
+        // ATLASES
+        this.load.atlas('player_atlas', './assets/sprites/cyclist_atlas.png', './assets/sprites/cyclist_atlas.json');
+        this.load.atlas('grunt_atlas', './assets/sprites/grunt_atlas.png', './assets/sprites/grunt_atlas.json');
 
+        // SPRITESHEETS
+        //this.load.spritesheet('enemy_idle', './assets/grunt_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+        //this.load.spritesheet('enemy_slice', './assets/grunt_slice.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
+        //this.load.spritesheet('enemy_knockout', './assets/grunt_knockout.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
         this.load.spritesheet('swish', './assets/swish.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3});
     }
   
@@ -35,99 +42,111 @@ class Play extends Phaser.Scene {
         this.highway = this.add.tileSprite(0, 0, 960, 640, 'highway').setOrigin(0,0);
 
         // ANIMATIONS
-        if (!this.anims.exists('player_idle')) {
-            this.anims.create({
-                key: 'player_idle',
-                frames: this.anims.generateFrameNumbers('player_idle', {start: 0, end: 1, first: 0}),
-                frameRate: 10,
-                repeat: -1
-            });
-        }
-        if (!this.anims.exists('player_crash')) {
-            this.anims.create({
-                key: 'player_crash',
-                frames: this.anims.generateFrameNumbers('player_crash', {start: 0, end: 7, first: 0}),
-                frameRate: 10,
-                repeat: 0
-            });
-        }
-        if (!this.anims.exists('player_idleclub')) {
-            this.anims.create({
-                key: 'player_idleclub',
-                frames: this.anims.generateFrameNumbers('player_idleclub', {start: 0, end: 1, first: 0}),
-                frameRate: 10,
-                repeat: -1
-            });
-        }
-        if (!this.anims.exists('player_clubswing')) {
-            this.anims.create({
-                key: 'player_clubswing',
-                frames: this.anims.generateFrameNumbers('player_clubswing', {start: 0, end: 3, first: 0}),
-                frameRate: 15,
-                repeat: 0
-            });
-        }
+        {
+            // PLAYER IDLE
+            if (!this.anims.exists('player_idle')) {
+                this.anims.create({
+                    key: 'player_idle',
+                    frames: this.anims.generateFrameNames('player_atlas', {prefix: 'cyclist_idle', start: 1, end: 2}),
+                    frameRate: 10,
+                    repeat: -1
+                });
+            }
+            // PLAYER CRASH
+            if (!this.anims.exists('player_crash')) {
+                this.anims.create({
+                    key: 'player_crash',
+                    frames: this.anims.generateFrameNames('player_atlas', {prefix: 'cyclist_crash', start: 1, end: 8}),
+                    frameRate: 10,
+                    repeat: 0
+                });
+            }
+            // PLAYER IDLE WITH CLUB
+            if (!this.anims.exists('player_idleclub')) {
+                this.anims.create({
+                    key: 'player_idleclub',
+                    frames: this.anims.generateFrameNames('player_atlas', {prefix: 'cyclist_club', start: 1, end: 2}),
+                    frameRate: 10,
+                    repeat: -1
+                });
+            }
+            // PLAYER SWING
+            if (!this.anims.exists('player_clubswing')) {
+                this.anims.create({
+                    key: 'player_clubswing',
+                    frames: this.anims.generateFrameNames('player_atlas', {prefix: 'cyclist_swing', start: 1, end: 4}),
+                    frameRate: 15,
+                    repeat: 0
+                });
+            }
 
-        if (!this.anims.exists('enemy_idle')) {
-            this.anims.create({
-                key: 'enemy_idle',
-                frames: this.anims.generateFrameNumbers('enemy_idle', {start: 0, end: 1, first: 0}),
-                frameRate: 10,
-                repeat: -1
-            });
-        }
-        if (!this.anims.exists('enemy_slice')) {
-            this.anims.create({
-                key: 'enemy_slice',
-                frames: this.anims.generateFrameNumbers('enemy_slice', {start: 0, end: 2, first: 0}),
-                frameRate: 10,
-                repeat: 0
-            });
-        }
-        if (!this.anims.exists('enemy_knockout')) {
-            this.anims.create({
-                key: 'enemy_knockout',
-                frames: this.anims.generateFrameNumbers('enemy_knockout', {start: 0, end: 2, first: 0}),
-                frameRate: 10,
-                repeat: 0
-            });
-        }
+            // ENEMY IDLE
+            if (!this.anims.exists('enemy_idle')) {
+                this.anims.create({
+                    key: 'enemy_idle',
+                    frames: this.anims.generateFrameNames('grunt_atlas', {prefix: 'grunt_idle', start: 1, end: 2}),
+                    frameRate: 10,
+                    repeat: -1
+                });
+            }
+            // ENEMY SLICE
+            if (!this.anims.exists('enemy_slice')) {
+                this.anims.create({
+                    key: 'enemy_slice',
+                    frames: this.anims.generateFrameNames('grunt_atlas', {prefix: 'grunt_slice', start: 1, end: 3}),
+                    frameRate: 10,
+                    repeat: 0
+                });
+            }
+            // ENEMY KNOCKOUT
+            if (!this.anims.exists('enemy_knockout')) {
+                this.anims.create({
+                    key: 'enemy_knockout',
+                    frames: this.anims.generateFrameNames('grunt_atlas', {prefix: 'grunt_knockout', start: 1, end: 3}),
+                    frameRate: 10,
+                    repeat: 0
+                });
+            }
 
-        if (!this.anims.exists('swish')) {
-            this.anims.create({
-                key: 'swish',
-                frames: this.anims.generateFrameNumbers('swish', {start: 0, end: 3, first: 0}),
-                frameRate: 15,
-                repeat: 0
-            });
+            // SWISH
+            if (!this.anims.exists('swish')) {
+                this.anims.create({
+                    key: 'swish',
+                    frames: this.anims.generateFrameNumbers('swish', {start: 0, end: 3, first: 0}),
+                    frameRate: 15,
+                    repeat: 0
+                });
+            }
         }
         
+        // AUDIO
+        {
+            this.explosion = this.sound.add("explosion", {
+                volume: 0.5
+            });
 
-        this.explosion = this.sound.add("explosion", {
-            volume: 0.5
-        });
+            this.pickup = this.sound.add("pickup", {
+                volume: 0.5
+            });
 
-        this.pickup = this.sound.add("pickup", {
-            volume: 0.5
-        });
+            this.swing = this.sound.add("swing", {
+                volume: 0.5
+            })
 
-        this.swing = this.sound.add("swing", {
-            volume: 0.5
-        })
+            this.bonk = this.sound.add("bonk", {
+                volume: 0.5
+            })
 
-        this.bonk = this.sound.add("bonk", {
-            volume: 0.5
-        })
+            this.break = this.sound.add("break", {
+                volume: 0.5
+            })
 
-        this.break = this.sound.add("break", {
-            volume: 0.5
-        })
-
-        this.music = this.sound.add("music", {
-            volume: 0.1,
-            loop: true
-        });
-        this.music.play();
+            this.music = this.sound.add("music", {
+                volume: 0.1,
+                loop: true
+            });
+            this.music.play();
+        }
 
         // CONTROLS
         //keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -157,7 +176,7 @@ class Play extends Phaser.Scene {
         //this.level = 0;
         //this.timer.addEvent()
 
-        this.add.rectangle(20, 20, game.config.width - 40, 30, 0xbbbbbb).setOrigin(0,0);
+        this.add.rectangle(20, 20, game.config.width - 600, 30, 0xbbbbbb).setOrigin(0,0);
 
         this.UIConfig = {
             color: '#000000',
