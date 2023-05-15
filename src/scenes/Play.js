@@ -18,6 +18,7 @@ class Play extends Phaser.Scene {
         this.load.image('skyline', './assets/skyline.png');
         this.load.image('player', './assets/cyclist3.png');
         this.load.image('golfbag', './assets/golfbag.png');
+        this.load.image('contact', './assets/sprites/contact.png');
 
         // ATLASES
         this.load.atlas('player_atlas', './assets/sprites/cyclist_atlas.png', './assets/sprites/cyclist_atlas.json');
@@ -168,8 +169,10 @@ class Play extends Phaser.Scene {
         //this.level = 0;
         //this.timer.addEvent()
 
+        // TIME DISPLAY BORDER
         this.add.rectangle(20, 20, game.config.width - 600, 30, 0xbbbbbb).setOrigin(0,0);
 
+        // UI TEXT STYLE
         this.UIConfig = {
             color: '#000000',
             fontFamily: 'Verdana',
@@ -177,8 +180,10 @@ class Play extends Phaser.Scene {
             align: 'center'
         };
 
+        // CURRENT TIME DISPLAY
         this.timeDisplay = this.add.text(50, 25, 'TIME: 0:00:00', this.UIConfig);
 
+        // CONVERT BEST TIME TO DISPLAYABLE FORMAT
         let timeElapsed = highestTime;
         let timeSeconds = timeElapsed % 60;
             if (timeSeconds < 10) {
@@ -195,6 +200,19 @@ class Play extends Phaser.Scene {
         this.bestTimeDisplay = this.add.text(200, 25, 'RECORD: '+timeHours+':'+timeMinutes+':'+timeSeconds, this.UIConfig);
 
         this.gamePaused = false;
+
+        if (tutorial) {
+            this.dialogueBox = this.add.rectangle(175, 75, 512, 128, 0xbbbbbb).setOrigin(0,0).setScale(0,1);
+            this.contactDisplay = this.add.image(20, 75, 'contact').setOrigin(0,0).setScale(0,1);
+            this.openDialogueBox();
+            this.dialogueText = this.add.text(185, 85, '', this.UIConfig).setWordWrapWidth(491).setAlign('left');
+            let dialogue = "Watch out, Rider! PearLab has sent their GRUNTS to prevent your escape. Use the UP and DOWN ARROW KEYS to SWITCH LANES and avoid their blades!";
+            //this.dialogueText.text = dialogue;
+            this.rolloutDialogue(dialogue);
+            this.time.delayedCall(10000, () => {
+                this.closeDialogueBox();
+            }, null, this);
+        }
     }
 
     update() {
@@ -271,8 +289,20 @@ class Play extends Phaser.Scene {
     newTimer() {
         //console.log('yo');
         this.level += 1;
+        // SPAWN GOLF CLUBS EVERY 15 SECONDS
         if (this.level % 3 == 0) {
             this.golfBag = new GolfBag(this).setOrigin(0,1);
+        }
+
+        if (tutorial && this.level == 3) {
+            this.openDialogueBox();
+            //this.dialogueText = this.add.text(185, 85, '', this.UIConfig).setWordWrapWidth(491).setAlign('left');
+            let dialogue = "Rider, PICK UP one of those GOLF CLUBS and use SPACE to SWING at any grunt directly in your way. They look FLIMSY though, might BREAK after a COUPLE GOOD HITS.";
+            //this.dialogueText.text = dialogue;
+            this.rolloutDialogue(dialogue);
+            this.time.delayedCall(10000, () => {
+                this.closeDialogueBox();
+            }, null, this);
         }
 
         if (this.enemySpeedMod < 3) {
@@ -376,6 +406,45 @@ class Play extends Phaser.Scene {
         if (this.golfBag) {
             this.golfBag.setVelocity(-this.golfBag.moveSpeed, 0);
         }
+    }
+
+    openDialogueBox() {
+        //this.dialogueBox = this.add.rectangle(175, 75, 512, 128, 0xbbbbbb).setOrigin(0,0);
+        //this.contactDisplay = this.add.image(20, 75, 'contact').setOrigin(0,0);
+        this.tweens.add({
+            targets: [this.contactDisplay, this.dialogueBox],
+            duration: 400,
+            scaleX: {from: 0, to: 1},
+            ease: 'Linear'
+
+        });
+    }
+
+    rolloutDialogue(dialogue) {
+        let lines = this.dialogueText.getWrappedText(dialogue);
+        let text = lines.join('\n');
+
+        //let length = text.length;
+        let letterCount = 0;
+        this.time.addEvent({
+            callback: () => {
+                this.dialogueText.text += text[letterCount];
+                letterCount += 1;
+            },
+            repeat: text.length - 1,
+            delay: 40
+        });
+    }
+
+    closeDialogueBox() {
+        this.tweens.add({
+            targets: [this.contactDisplay, this.dialogueBox],
+            duration: 400,
+            scaleX: {from: 1, to: 0},
+            ease: 'Linear'
+
+        });
+        this.dialogueText.text = '';
     }
   
   }

@@ -47,8 +47,13 @@ class Title extends Phaser.Scene {
     });
 
     // TUTORIAL BUTTON
-    this.tutorialButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button').setScale(2.1, 1);
-    this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'ENABLE TOOLTIPS', this.UIConfig).setOrigin(0.5, 0.5);
+    if (!tutorial) {
+      this.tutorialButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button').setScale(2.1, 1);
+      this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'ENABLE TOOLTIPS', this.UIConfig).setOrigin(0.5, 0.5);
+    } else {
+      this.tutorialButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button2').setScale(2.1, 1);
+      this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'DISABLE TOOLTIPS', this.UIConfig).setOrigin(0.5, 0.5).setColor('#FFFFFF');
+    }
     this.tutorialButton.setInteractive({
       useHandCursor: true
     });
