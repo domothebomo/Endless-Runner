@@ -14,3 +14,4 @@ let config = {
 
 let game = new Phaser.Game(config);
 let keySPACE, keyESC;
+let highestTime = 0;

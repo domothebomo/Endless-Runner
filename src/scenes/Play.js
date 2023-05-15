@@ -134,7 +134,10 @@ class Play extends Phaser.Scene {
         keyESC = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
 
         // PLAYER
-        this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
+        //this.player = new Player(this, 30, 470, 'player').setOrigin(0,1);
+        this.player = new Player(this, 100, 470, 'player').setOrigin(0,1);
+
+        this.golfBag = null;
 
         // ENEMIES
         this.enemies = [];
@@ -154,7 +157,31 @@ class Play extends Phaser.Scene {
         //this.level = 0;
         //this.timer.addEvent()
 
-        this.timeDisplay = this.add.text(50, 50, '0', {});
+        this.add.rectangle(20, 20, game.config.width - 40, 30, 0xbbbbbb).setOrigin(0,0);
+
+        this.UIConfig = {
+            color: '#000000',
+            fontFamily: 'Verdana',
+            fontSize: '15px',
+            align: 'center'
+        };
+
+        this.timeDisplay = this.add.text(50, 25, 'TIME: 0:00:00', this.UIConfig);
+
+        let timeElapsed = highestTime;
+        let timeSeconds = timeElapsed % 60;
+            if (timeSeconds < 10) {
+                timeSeconds = '0'+timeSeconds;
+            }
+        let timeMinutes = Math.floor((timeElapsed / 60)) % 60;
+            if (timeMinutes < 10) {
+                timeMinutes = '0'+timeMinutes;
+            }
+        let timeHours = Math.floor((timeElapsed / 60) / 60);
+            if (timeHours < 10) {
+                timeHours = '0'+timeHours;
+            }
+        this.bestTimeDisplay = this.add.text(200, 25, 'RECORD: '+timeHours+':'+timeMinutes+':'+timeSeconds, this.UIConfig);
 
         this.gamePaused = false;
     }
@@ -174,7 +201,25 @@ class Play extends Phaser.Scene {
                 return;
             }
 
-            this.timeDisplay.text = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
+            let timeElapsed = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
+            let timeSeconds = timeElapsed % 60;
+            if (timeSeconds < 10) {
+                timeSeconds = '0'+timeSeconds;
+            }
+            let timeMinutes = Math.floor((timeElapsed / 60)) % 60;
+            if (timeMinutes < 10) {
+                timeMinutes = '0'+timeMinutes;
+            }
+            let timeHours = Math.floor((timeElapsed / 60) / 60);
+            if (timeHours < 10) {
+                timeHours = '0'+timeHours;
+            }
+            //this.timeDisplay.text = Math.floor((this.timer.elapsed + 5000 * this.level) / 1000);
+            this.timeDisplay.text = 'TIME: '+timeHours+':'+timeMinutes+':'+timeSeconds;
+            if (timeElapsed > highestTime) {
+                highestTime = timeElapsed;
+                this.bestTimeDisplay.text = 'RECORD: '+timeHours+':'+timeMinutes+':'+timeSeconds;
+            }
 
             // UPDATE BACKGROUND
             this.highway.tilePositionX += 6 * this.enemySpeedMod;
@@ -185,10 +230,13 @@ class Play extends Phaser.Scene {
 
             // UPDATE GOLFBAG
             if (this.golfBag) {
-                this.golfBag.update();
-                if (this.player.lane == this.golfBag.lane) {
+                if (this.golfBag.x < 0 - this.golfBag.width) {
+                     this.golfBag.destroy();
+                     this.golfBag = null;
+                } else if (this.player.lane == this.golfBag.lane) {
                     this.physics.world.overlap(this.player, this.golfBag, () => {
                         this.golfBag.destroy();
+                        this.golfBag = null;
                         this.pickup.play();
                         this.player.clubDurability = 3;
                     }, null, this);
@@ -210,9 +258,9 @@ class Play extends Phaser.Scene {
     }
 
     newTimer() {
-        console.log('yo');
+        //console.log('yo');
         this.level += 1;
-        if (this.level % 1 == 0) {
+        if (this.level % 3 == 0) {
             this.golfBag = new GolfBag(this).setOrigin(0,1);
         }
 
@@ -252,7 +300,7 @@ class Play extends Phaser.Scene {
     navButtons() {
         // RESTART BUTTON
         this.restartButton = this.add.sprite(game.config.width / 2, game.config.height / 2, 'button');
-        this.restartButtonText = this.add.text(this.restartButton.x, this.restartButton.y, 'RESTART', {color: '#000000'}).setOrigin(0.5, 0.5);
+        this.restartButtonText = this.add.text(this.restartButton.x, this.restartButton.y, 'RESTART', this.UIConfig).setOrigin(0.5, 0.5);
         this.restartButton.setInteractive({
         useHandCursor: true
         });
@@ -263,7 +311,7 @@ class Play extends Phaser.Scene {
 
         // QUIT BUTTON
         this.quitButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button');
-        this.quitButtonText = this.add.text(this.quitButton.x, this.quitButton.y, 'QUIT', {color: '#000000'}).setOrigin(0.5, 0.5);
+        this.quitButtonText = this.add.text(this.quitButton.x, this.quitButton.y, 'QUIT', this.UIConfig).setOrigin(0.5, 0.5);
         this.quitButton.setInteractive({
         useHandCursor: true
         });
@@ -278,13 +326,17 @@ class Play extends Phaser.Scene {
         this.timer.paused = true;
         this.music.pause();
 
+        this.player.setVelocity(0,0);
+        if (this.golfBag) {
+            this.golfBag.setVelocity(0,0);
+        }
         for (let i = 0; i < this.enemyCount; i++) {
             this.enemies[i].setVelocity(0,0);
         }
 
         // RESUME BUTTON
         this.resumeButton = this.add.sprite(game.config.width / 2, game.config.height / 2 - 58, 'button');
-        this.resumeButtonText = this.add.text(this.resumeButton.x, this.resumeButton.y, 'RESUME', {color: '#000000'}).setOrigin(0.5, 0.5);
+        this.resumeButtonText = this.add.text(this.resumeButton.x, this.resumeButton.y, 'RESUME', this.UIConfig).setOrigin(0.5, 0.5);
         this.resumeButton.setInteractive({
             useHandCursor: true
         });
@@ -309,6 +361,10 @@ class Play extends Phaser.Scene {
 
         this.quitButton.destroy();
         this.quitButtonText.destroy();
+
+        if (this.golfBag) {
+            this.golfBag.setVelocity(-this.golfBag.moveSpeed, 0);
+        }
     }
   
   }

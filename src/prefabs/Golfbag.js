@@ -24,17 +24,4 @@ class GolfBag extends Phaser.Physics.Arcade.Sprite {
         
     }
 
-    update() {
-        //this.setVelocity(-this.moveSpeed * this.modifier, 0);
-
-        // RESET ON REACHING END OF SCREEN
-        if (this.x < 0 - this.width) {
-            this.reset();
-        }
-    }
-
-    reset() {
-        this.destroy();
-    }
-
 }
