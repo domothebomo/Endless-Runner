@@ -19,19 +19,11 @@ class Play extends Phaser.Scene {
         this.load.image('player', './assets/cyclist3.png');
         this.load.image('golfbag', './assets/golfbag.png');
 
-        //this.load.spritesheet('player_idle', './assets/cyclist_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        //this.load.spritesheet('player_crash', './assets/cyclist_crash.png', {frameWidth: 80, frameHeight: 64, startFrame: 0, endFrame: 7});
-        //this.load.spritesheet('player_idleclub', './assets/cyclist_idleclub.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        //this.load.spritesheet('player_clubswing', './assets/cyclist_clubswing.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 3});
-
         // ATLASES
         this.load.atlas('player_atlas', './assets/sprites/cyclist_atlas.png', './assets/sprites/cyclist_atlas.json');
         this.load.atlas('grunt_atlas', './assets/sprites/grunt_atlas.png', './assets/sprites/grunt_atlas.json');
 
         // SPRITESHEETS
-        //this.load.spritesheet('enemy_idle', './assets/grunt_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
-        //this.load.spritesheet('enemy_slice', './assets/grunt_slice.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
-        //this.load.spritesheet('enemy_knockout', './assets/grunt_knockout.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
         this.load.spritesheet('swish', './assets/swish.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3});
     }
   

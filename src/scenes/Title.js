@@ -4,7 +4,8 @@ class Title extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image('button', './assets/button.png');
+    this.load.image('button', './assets/sprites/button.png');
+    this.load.image('button2', './assets/sprites/button2.png');
     this.load.bitmapFont('verminvibes', './assets/fonts/VerminVibes.png', './assets/fonts/VerminVibes.xml');
   }
 
@@ -47,11 +48,22 @@ class Title extends Phaser.Scene {
 
     // TUTORIAL BUTTON
     this.tutorialButton = this.add.sprite(game.config.width / 2, game.config.height / 2 + 58, 'button').setScale(2.1, 1);
-    this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'HOW TO PLAY', this.UIConfig).setOrigin(0.5, 0.5);
+    this.tutorialButtonText = this.add.text(this.tutorialButton.x, this.tutorialButton.y, 'ENABLE TOOLTIPS', this.UIConfig).setOrigin(0.5, 0.5);
     this.tutorialButton.setInteractive({
       useHandCursor: true
     });
     this.tutorialButton.on('pointerdown', () => {
+      if (this.tutorialButtonText.text == 'ENABLE TOOLTIPS') {
+        tutorial = true;
+        this.tutorialButton.setTexture('button2');
+        this.tutorialButtonText.text = 'DISABLE TOOLTIPS';
+        this.tutorialButtonText.setColor('#FFFFFF');
+      } else {
+        tutorial = false;
+        this.tutorialButton.setTexture('button');
+        this.tutorialButtonText.text = 'ENABLE TOOLTIPS';
+        this.tutorialButtonText.setColor('#000000');
+      }
 
     });
 
