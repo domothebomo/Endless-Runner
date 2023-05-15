@@ -4,12 +4,22 @@ class Title extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('highway', './assets/sprites/highway.png');
+    this.load.image('skyline', './assets/sprites/skyline.png');
+
     this.load.image('button', './assets/sprites/button.png');
     this.load.image('button2', './assets/sprites/button2.png');
     this.load.bitmapFont('verminvibes', './assets/fonts/VerminVibes.png', './assets/fonts/VerminVibes.xml');
   }
 
   create() {
+
+    // BACKGROUND SPRITES
+    this.background = this.add.tileSprite(0, 0, 960, 640, 'skyline').setOrigin(0,0);
+    this.highway = this.add.tileSprite(0, 0, 960, 640, 'highway').setOrigin(0,0);
+
+    this.add.rectangle(game.config.width / 2, game.config.height / 2 - 102, 410, 90, 0xbbbbbb).setOrigin(0.5,0.5);
+    this.add.rectangle(game.config.width / 2, game.config.height / 2 - 102, 400, 80, 0x2b2b2b).setOrigin(0.5,0.5);
 
     this.add.bitmapText(game.config.width / 2, game.config.height / 2 - 100, 'verminvibes', 'NIGHT RIDER').setOrigin(0.5,0.5);
 
@@ -73,7 +83,7 @@ class Title extends Phaser.Scene {
     });
 
     this.UIConfig.color = '#FFFFFF';
-    this.creditsText = this.add.text(game.config.width / 2, game.config.height / 2 + 116, 'created by Dominic Fanaris\nMusic: Sunset Rider - FASSounds', this.UIConfig).setOrigin(0.5,0.5);
+    this.creditsText = this.add.text(game.config.width / 2, game.config.height / 2 + 126, 'created by Dominic Fanaris\nMusic: Sunset Rider - FASSounds', this.UIConfig).setOrigin(0.5,0.5);
 
   }
 

@@ -6,18 +6,18 @@ class Play extends Phaser.Scene {
     preload() {
 
         // AUDIO
-        this.load.audio('music', './assets/sunset-rider.mp3');
-        this.load.audio('explosion', './assets/explosion.wav');
-        this.load.audio('pickup', './assets/pickupclub.wav')
-        this.load.audio('swing', './assets/swing.wav');
-        this.load.audio('bonk', './assets/bonk.wav');
-        this.load.audio('break', './assets/break.wav');
+        this.load.audio('music', './assets/audio/sunset-rider.mp3');
+        this.load.audio('explosion', './assets/audio/explosion.wav');
+        this.load.audio('pickup', './assets/audio/pickupclub.wav')
+        this.load.audio('swing', './assets/audio/swing.wav');
+        this.load.audio('bonk', './assets/audio/bonk.wav');
+        this.load.audio('break', './assets/audio/break.wav');
 
         // IMAGES
-        this.load.image('highway', './assets/highway.png');
-        this.load.image('skyline', './assets/skyline.png');
-        this.load.image('player', './assets/cyclist3.png');
-        this.load.image('golfbag', './assets/golfbag.png');
+        //this.load.image('highway', './assets/sprites/highway.png');
+        //this.load.image('skyline', './assets/sprites/skyline.png');
+        this.load.image('player', './assets/sprites/cyclist2.png');
+        this.load.image('golfbag', './assets/sprites/golfbag.png');
         this.load.image('contact', './assets/sprites/contact.png');
 
         // ATLASES
@@ -25,7 +25,7 @@ class Play extends Phaser.Scene {
         this.load.atlas('grunt_atlas', './assets/sprites/grunt_atlas.png', './assets/sprites/grunt_atlas.json');
 
         // SPRITESHEETS
-        this.load.spritesheet('swish', './assets/swish.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3});
+        this.load.spritesheet('swish', './assets/sprites/swish.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3});
     }
   
     create() {
@@ -172,6 +172,8 @@ class Play extends Phaser.Scene {
         // TIME DISPLAY BORDER
         this.add.rectangle(20, 20, game.config.width - 600, 30, 0xbbbbbb).setOrigin(0,0);
 
+        this.add.rectangle(770, 20, 170, 30, 0xbbbbbb).setOrigin(0,0);
+
         // UI TEXT STYLE
         this.UIConfig = {
             color: '#000000',
@@ -199,8 +201,13 @@ class Play extends Phaser.Scene {
             }
         this.bestTimeDisplay = this.add.text(200, 25, 'RECORD: '+timeHours+':'+timeMinutes+':'+timeSeconds, this.UIConfig);
 
-        this.gamePaused = false;
+        // ESCAPE TOOLTIP DISPLAY
+        this.escDisplay = this.add.text(800, 25, 'ESC to PAUSE', this.UIConfig);
 
+        // GAME PAUSED BOOL
+        this.gamePaused = false;
+        
+        // TOOLTIP DIALOGUE
         if (tutorial) {
             this.dialogueBox = this.add.rectangle(175, 75, 512, 128, 0xbbbbbb).setOrigin(0,0).setScale(0,1);
             this.contactDisplay = this.add.image(20, 75, 'contact').setOrigin(0,0).setScale(0,1);
