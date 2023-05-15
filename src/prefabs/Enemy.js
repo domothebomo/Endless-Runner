@@ -17,6 +17,7 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.moveSpeed = Phaser.Math.Between(400, 500);
         this.lane = randomLane;
         this.laneY = lanes;
+        this.crashed = false;
 
         // CONFIG
         this.anims.play('enemy_idle');
@@ -29,14 +30,16 @@ class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         // RESET ON REACHING END OF SCREEN
         if (this.x < 0 - this.width) {
-            this.reset(0.1);
+            this.reset();
         }
     }
 
-    reset(mod) {
+    reset() {
+        this.anims.play('enemy_idle');
         this.lane = Phaser.Math.Between(0, 5);
         this.y = this.laneY[this.lane];
         this.x = 960;
+        this.crashed = false;
         //if (this.modifier >= 5.0) {
         //    this.modifier = 5.0;
         //} else {

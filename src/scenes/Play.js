@@ -8,6 +8,8 @@ class Play extends Phaser.Scene {
         this.load.audio('explosion', './assets/explosion.wav');
         this.load.audio('pickup', './assets/pickupclub.wav')
         this.load.audio('swing', './assets/swing.wav');
+        this.load.audio('bonk', './assets/bonk.wav');
+        this.load.audio('break', './assets/break.wav');
 
         this.load.image('highway', './assets/highway.png');
         this.load.image('skyline', './assets/skyline.png');
@@ -17,9 +19,13 @@ class Play extends Phaser.Scene {
         this.load.spritesheet('player_idle', './assets/cyclist_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
         this.load.spritesheet('player_crash', './assets/cyclist_crash.png', {frameWidth: 80, frameHeight: 64, startFrame: 0, endFrame: 7});
         this.load.spritesheet('player_idleclub', './assets/cyclist_idleclub.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
+        this.load.spritesheet('player_clubswing', './assets/cyclist_clubswing.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 3});
 
         this.load.spritesheet('enemy_idle', './assets/grunt_idle2.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 1});
         this.load.spritesheet('enemy_slice', './assets/grunt_slice.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
+        this.load.spritesheet('enemy_knockout', './assets/grunt_knockout.png', {frameWidth: 64, frameHeight: 48, startFrame: 0, endFrame: 2});
+
+        this.load.spritesheet('swish', './assets/swish.png', {frameWidth: 32, frameHeight: 32, startFrame: 0, endFrame: 3});
     }
   
     create() {
@@ -53,6 +59,14 @@ class Play extends Phaser.Scene {
                 repeat: -1
             });
         }
+        if (!this.anims.exists('player_clubswing')) {
+            this.anims.create({
+                key: 'player_clubswing',
+                frames: this.anims.generateFrameNumbers('player_clubswing', {start: 0, end: 3, first: 0}),
+                frameRate: 15,
+                repeat: 0
+            });
+        }
 
         if (!this.anims.exists('enemy_idle')) {
             this.anims.create({
@@ -70,6 +84,23 @@ class Play extends Phaser.Scene {
                 repeat: 0
             });
         }
+        if (!this.anims.exists('enemy_knockout')) {
+            this.anims.create({
+                key: 'enemy_knockout',
+                frames: this.anims.generateFrameNumbers('enemy_knockout', {start: 0, end: 2, first: 0}),
+                frameRate: 10,
+                repeat: 0
+            });
+        }
+
+        if (!this.anims.exists('swish')) {
+            this.anims.create({
+                key: 'swish',
+                frames: this.anims.generateFrameNumbers('swish', {start: 0, end: 3, first: 0}),
+                frameRate: 15,
+                repeat: 0
+            });
+        }
         
 
         this.explosion = this.sound.add("explosion", {
@@ -81,6 +112,14 @@ class Play extends Phaser.Scene {
         });
 
         this.swing = this.sound.add("swing", {
+            volume: 0.5
+        })
+
+        this.bonk = this.sound.add("bonk", {
+            volume: 0.5
+        })
+
+        this.break = this.sound.add("break", {
             volume: 0.5
         })
 
@@ -158,20 +197,22 @@ class Play extends Phaser.Scene {
 
             // UPDATE ENEMIES
             for (let i = 0; i < this.enemyCount; i++) {
-                this.enemies[i].update();
+                if (!this.enemies[i].crashed) {
+                    this.enemies[i].update();
 
-                // CHECK COLLISIONS
-                if (this.player.lane == this.enemies[i].lane) {
-                    this.physics.world.overlap(this.player, this.enemies[i], () => {this.crash(this.enemies[i])}, null, this);
+                    // CHECK COLLISIONS
+                    if (this.player.lane == this.enemies[i].lane) {
+                        this.physics.world.overlap(this.player, this.enemies[i], () => {this.crash(this.enemies[i])}, null, this);
+                    }
                 }
             }
         }
     }
 
     newTimer() {
-        //console.log('yo');
+        console.log('yo');
         this.level += 1;
-        if (this.level % 2 == 0) {
+        if (this.level % 1 == 0) {
             this.golfBag = new GolfBag(this).setOrigin(0,1);
         }
 

@@ -16,6 +16,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.moving = false;
         this.crashed = false;
         this.clubDurability = 0;
+        this.swinging = false;
         this.laneY = [365, 415, 470, 520, 570, 630];
         //this.laneY = [375, 415, 470, 520, 570, 630];
 
@@ -26,12 +27,43 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     update() {
 
+        // IF WIELDING A CLUB
         if (this.clubDurability > 0) {
-            this.anims.play('player_idleclub', true);
-            if (Phaser.Input.Keyboard.JustDown(keySPACE)) {
+            if (!this.swinging) {
+                this.anims.play('player_idleclub', true);
+            } else {
+                // When swinging, swish sprite follows player and hits enemies
+                this.swish.y = this.y;
+                for (let i = 0; i < this.currentScene.enemyCount; i++) {
+                    this.currentScene.physics.world.overlap(this.swish, this.currentScene.enemies[i], () => {this.hit(this.currentScene.enemies[i])}, null, this);
+                }
+            }
+            // SWING YOUR WEAPON
+            if (!this.swinging && Phaser.Input.Keyboard.JustDown(keySPACE)) {
+                this.swinging = true;
                 this.currentScene.swing.play();
+
+                if (this.swish) {
+                    this.swish.destroy();
+                }
+                this.swish = this.currentScene.physics.add.sprite(this.x + this.width, this.y - 5, 'swish').setOrigin(0,1);
+                this.swish.anims.play('swish');
+
+                this.anims.play('player_clubswing');
+                //this.on('animationcomplete',() => {
+                //    this.swinging=false;
+                //    this.swish.destroy();
+                //});
+                this.currentScene.time.delayedCall(400, () => {
+                    this.swinging=false;
+                    this.swish.destroy();
+                }, null, this);
+
             }
         } else {
+            if (this.swish) {
+                this.swish.destroy();
+            }
             this.anims.play('player_idle', true);
         }
 
@@ -61,5 +93,28 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
         }
         
+    }
+
+    hit(enemy) {
+        if (!enemy.crashed) {
+            //this.on('animationcomplete',() => {
+            //    this.swinging=false;
+            //    this.swish.destroy();
+            //});
+            //this.swinging=false;
+            //this.swish.destroy();
+            this.clubDurability -= 1;
+            if (this.clubDurability > 0) {
+                this.currentScene.bonk.play();
+            } else {
+                this.currentScene.break.play();
+            }
+            
+            enemy.crashed = true;
+            enemy.anims.play('enemy_knockout');
+            this.currentScene.time.delayedCall(3000, () => {
+                enemy.reset();
+            }, null, this);
+        }
     }
 }
